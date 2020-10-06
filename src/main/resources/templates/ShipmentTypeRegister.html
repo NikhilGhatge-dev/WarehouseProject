@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+	<div class="container"><!-- Container start -->
+		<div class="card"><!-- card body -->
+
+			<div class="card-header bg-primary text-white text-center"><!-- card starting header -->
+				<h3>WELCOME SHIPMENT REGISTER PAGE</h3>
+			</div><!-- card ending header -->
+
+			<div class="card-body"><!-- card body start-->
+			<form th:action="@{/shipmentType/save}" method="POST" th:object="${shipmentType}" id="stRegForm">
+			<!-- Row 1 -->
+			<div class="row">
+				<div class="col-2">
+					<label>SHIPMENT TYPE</label>	
+				</div>
+				
+				<div class="col-5">
+					<select th:field="*{shipmentMode}" class="form-control">
+ 						<option value="">-SELECT-</option>
+						<option value="AIR">AIR</option>
+						<option value="TRUCK">TRUCK</option>
+						<option value="SHIP">SHIP</option>
+						<option value="TRAIN">TRAIN</option> 				
+ 					</select>
+				</div>
+				
+				<div class="col-5">
+					<span id="shipmentModeError"></span>
+				</div>
+			</div>			
+			
+			<!-- Row 2 -->
+			<div class="row">
+				<div class="col-2">
+					<label>SHIPMENTCODE</label>
+				</div>
+				
+				<div class="col-5">
+					<input type="text" th:field="*{shipmentCode}" class="form-control" />
+				</div>
+				
+				<div class="col-5">
+					<span id="shipmentCodeError"></span>
+				</div>
+			</div>
+			
+			<!-- Row 3 -->
+			<div class="row">
+				<div class="col-2">
+					<label>ENABLESHIPMENT</label>
+				</div>
+				
+				<div class="col-5">
+					<input type="radio" th:field="*{enableShipment}" value="YES"> YES
+ 					<input type="radio" th:field="*{enableShipment}" value="NO"> NO
+				</div>
+				
+				<div class="col-5">
+					<span id="enableShipmentError"></span>
+				</div>
+			</div>
+			
+			
+			<!-- Row 4 -->
+			<div class="row">
+				<div class="col-2">
+					<label> SHIPMENTGRADE</label>
+				</div>
+				
+				<div class="col-5">
+					<input type="radio" th:field="*{shipmentGrade}" value="A"> A
+ 					<input type="radio" th:field="*{shipmentGrade}" value="B"> B
+				 	<input type="radio" th:field="*{shipmentGrade}" value="C"> C
+				</div>
+				
+				<div class="col-5">
+					<span id="shipmentGradeError"></span>
+				</div>
+			</div>
+	
+			<!-- Row 5 -->
+			<div class="row">
+				<div class="col-2">
+					<label>DESCIPTION</label>
+				</div>
+				
+				<div class="col-5">
+					<textarea th:field="*{descirption}" class="form-control"></textarea>
+				</div>
+				
+				<div class="col-5">
+					<span id="descirptionError"></span>
+				</div>
+			</div>
+ 	<input type="submit" value="ADD SHPMENT" class="btn btn-success">
+</form>
+</div><!-- card body -->
+
+<div class="card-footer bg-warning text-white text-center" th:if="${message != null}">
+	<span th:text="${message}" class="alert alert-info"></span>
+</div><!-- ending footer-->
+
+
+</div><!-- Card end -->
+</div><!-- Container end -->
+
+<script>
+    $(document).ready(function(){
+        //1. hide error
+        $("#shipmentModeError").hide();
+        $("#shipmentCodeError").hide();
+        $("#enableShipmentError").hide();
+        $("#shipmentGradeError").hide();
+        $("#descirptionError").hide();
+
+        //2.define error
+        var shipmentModeError;
+        var shipmentCodeError;
+        var enableShipmentError;
+        var shipmentGradeError;
+        var descirptionError;
+
+        //3 .validate function
+        function validate_shipmentMode(){
+            var val=$("#shipmentMode").val();
+            
+            if(val==''){
+                $("#shipmentModeError").show();
+                $("#shipmentModeError").html("Enter <b>Shipment Mode</b>");
+                $("#shipmentModeError").css("color","red");
+                shipmentModeError=false;
+            } 
+            else{
+                $("#shipmentModeError").hide();
+                shipmentModeError=true;
+            }
+            return shipmentModeError;
+        }
+
+        function validate_shipmentCode(){
+            var val=$("#shipmentCode").val();
+            var exp= /^[A-Z\-\s\,]{4,12}$/;
+            if(val==''){
+                $("#shipmentCodeError").show();
+                $("#shipmentCodeError").html("Enter <b>SHIPMENT CODE</b>");
+                $("#shipmentCodeError").css("color","red");
+                shipmentCodeError=false;
+            }else if(!exp.test(val))
+            {
+                $("#shipmentCodeError").show();
+                $("#shipmentCodeError").html("Enter<b> CODE MUST BE 4-12</b>");
+                $("#shipmentCodeError").css("color","red");
+                shipmentCodeError=false;
+            }  
+            else{
+                $("#shipmentCodeError").hide();
+                shipmentCodeError=true;
+            }
+            return shipmentCodeError;
+        }
+
+        function validate_enableShipment(){
+            var len = $("[name='enableShipment']:checked").length;
+            if(len==0){
+                $("#enableShipmentError").show();
+                $("#enableShipmentError").html("Choose <b>Enable SHIPMENT</b>");
+                $("#enableShipmentError").css("color","red");
+                enableShipmentError=false;
+            }else{
+                $("#enableShipmentError").hide();
+                enableShipmentError=true;
+            }
+            return enableShipmentError;
+        }
+        function validate_shipmentGrade(){
+            var len=$("[name='shipmentGrade']:checked").length;
+            if(len==0){
+                $("#shipmentGradeError").show();
+                $("#shipmentGradeError").html("CHOOSE <b>ENABLE SHIPMENT GRADE</b>");
+                $("#shipmentGradeError").css("color","red");
+                shipmentGradeError=false;
+            }else{
+                $("#shipmentGradeError").hide();
+                shipmentGradeError=true;
+            }
+        }
+        function validate_descirption(){
+            var val=$("#descirption").val();
+            var exp= /^[A-Z\-\s\,]{5,15}$/;
+            if(val==''){
+                $("#descirptionError").show();
+                $("#descirptionError").html("Enter <b>SHIPMENT DESCRIPTION</b>");
+                $("#descirptionError").css("color","red");
+                descirptionError=false;
+            }else if(!exp.test(val))
+            {
+                $("#descirptionError").show();
+                $("#descirptionError").html("Enter<b> CODE MUST BE 5-15</b>");
+                $("#descirptionError").css("color","red");
+                descirptionError=false;
+            }  
+            else{
+                $("#descirptionError").hide();
+                descirptionError=true;
+            }
+            return descirptionError;
+        }
+        
+        //4. call validate function
+        $("#shipmentMode").change(function(){
+            validate_shipmentMode();
+        });
+
+        $("#shipmentCode").keyup(function(){
+            $("#shipmentCode").val($("#shipmentCode").val().toUpperCase());
+            validate_shipmentCode();
+        });
+
+        $("[name='enableShipment']").change(function(){
+            validate_enableShipment();
+        });
+
+        $("[name='shipmentGrade']").change(function(){
+            validate_shipmentGrade();
+        });
+
+        $("#descirption").keyup(function(){
+            $("#descirption").val($("#descirption").val().toUpperCase());
+            validate_descirption();
+        });
+
+        //5 . submit
+        $("#stRegForm").submit(function(){
+            validate_shipmentMode();
+            validate_shipmentCode();
+            validate_enableShipment();
+            validate_shipmentGrade();
+            validate_descirption();
+
+            if(shipmentModeError && shipmentModeError && enableShipmentError && shipmentGradeError && descirptionError)
+                return true;
+            else return false;
+        });
+    });
+</script>
+
+</body>
+</html>

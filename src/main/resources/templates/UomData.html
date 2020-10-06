@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<body>  
+<div class="container">
+    <div class="card">
+
+		<div class="card-header bg-primary text-white text-center"><!-- starting head-->
+            <h3>UOM DATA PAGE</h3>
+		</div><!-- ending head-->
+        
+        <div class="card-body"><!-- starting start-->
+		<a th:href="@{/uom/excel}" class="btn btn-warning">EXCEL EXPORT</a>
+		<a th:href="@{/uom/pdf}" class="btn btn-warning">EXCEL PDF</a>
+         <table class="table table-hover">
+	        <tr class="bg-success text-white">
+		        <td>ID</td>
+		        <td>TYPE</td>
+		        <td>MODEL</td>
+		        <td>DESCIPTION</td>		
+		        <td>OPERTION</td>
+	        </tr>
+	        <tr th:each="ob:${list}">
+	            <td th:text="${ob.id}"></td>
+	            <td th:text="${ob.type}"></td>
+	            <td th:text="${ob.model}"></td>
+	            <td th:text="${ob.description}"></td>
+	            <td>
+	    	    <a class="btn btn-danger" th:href="@{/uom/delete?id={data}(data=${ob.id})}">DELETE</a>
+	    	    <a class="btn btn-info" th:href="@{/uom/edit?id={data}(data=${ob.id})}"> EDIT</a>
+	            </td>
+	        </tr>
+        </table>
+
+    </div><!-- ending body-->
+    <div class="card-footer bg-warning text-white text-center" th:if="${message != null}" >
+        <span th:text="${message}"  class="alert alert-info"></span>
+    </div><!-- ending footer-->
+    
+ </div><!-- end card -->
+</div><!-- end container -->
+</body>
+</html>
